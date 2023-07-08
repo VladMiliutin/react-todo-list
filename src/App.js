@@ -19,34 +19,39 @@ const TODO_ITEMS = [
 ]
 
 
-function TodoComponent({title, isCompleted, onClick}) {
-    console.log(`TodoComponent: ${title} ${isCompleted}`);
+function TodoComponent({title, isCompleted}) {
+    const defaultStyle = "ml-4 mr-4 flex flex-col justify-center";
+    const crossedStyle = `${defaultStyle} line-through`;
+    const [checked, setChecked] = useState(isCompleted);
+    const [style, setStyle] = useState(checked ? crossedStyle : defaultStyle);
+
+    function clickHandler() {
+        setChecked(!checked);
+        // Don't understand why its' reversed now
+        setStyle(checked ? defaultStyle : crossedStyle);
+    }
+    //console.log(`TodoComponent: ${title} ${isCompleted}`);
     return (
-        <div className="flex justify-center items-center">
-            <input type="checkbox" className="w-8 h-8 border border-gray-400 rounded-md" 
-                checked={isCompleted ? "checked" : ""} 
-                onClick={onClick}
-            >
-            </input>
-            <span className="ml-4">{title}</span>
-        </div>
+            <div className="flex flex-row gap-1 bg-gray-200 bg-opacity-70">
+                    <input type="checkbox" 
+                        className="mt-4 mb-4 ml-4 w-8 h-8"
+                        checked={checked ? "checked" : ""} 
+                        onClick={() => clickHandler()}
+                    >
+                    </input>
+                    <span className={style}>{title}</span>
+            </div>
     );
 }
 
 function TodoListComponent() {
-    const [todoItems, setTodoItems] = useState(TODO_ITEMS);
-
-    function clickHandler(i) {
-        const newItems = [...todoItems];
-        newItems[i].completed = !newItems[i].completed;
-        setTodoItems(newItems);
-    }
-
     return (
-        <div className="flex-1 left-0">
-            {todoItems.map((item, i) => {
-                return <TodoComponent title={item.title} isCompleted={item.completed} onClick={() => clickHandler(i)}/>
-            })}
+        <div className='flex flex-row justify-center'>
+            <div className="flex flex-col gap-1 max-w-md">
+                {TODO_ITEMS.map((item, i) => {
+                    return <TodoComponent title={item.title} isCompleted={item.completed}/>
+                })}
+            </div>
         </div>
     );
 }
