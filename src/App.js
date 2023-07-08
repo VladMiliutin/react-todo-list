@@ -45,12 +45,41 @@ function TodoComponent({title, isCompleted}) {
 }
 
 function TodoListComponent() {
+    const [todoItems, setTodoItems] = useState(TODO_ITEMS);
+    const [hideInput, setHideInput] = useState(true);
+    const [inputValue, setInputValue] = useState('');
+
+    const addTodoItem = (title) => {
+        const newList = [...todoItems, new TodoItem(title, false)];
+        setTodoItems(newList);
+        setInputValue('');
+    };
+
+    const addItemButton = () => {
+        if (inputValue.length > 0) {
+            addTodoItem(inputValue);
+        }
+        setHideInput(!hideInput);
+    }
+
     return (
-        <div className='flex flex-row justify-center'>
-            <div className="flex flex-col gap-1 max-w-md">
-                {TODO_ITEMS.map((item, i) => {
-                    return <TodoComponent title={item.title} isCompleted={item.completed}/>
-                })}
+        <div>
+            <div className='flex flex-row justify-center'>
+                <div className="flex flex-col gap-1 max-w-md">
+                    {todoItems.map((item, i) => {
+                        return <TodoComponent title={item.title} isCompleted={item.completed}/>
+                    })}
+                    <input 
+                        className="border-2 pt-4 pb-4"
+                        type="text"
+                        hidden={hideInput}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}>
+                    </input>
+                    <div class="flex flex-row justify-end">
+                        <button className="pl-4 pt-2 pb-2 pr-4 rounded-none bg-green-200 max-w-xs border-2" onClick={addItemButton}>Add</button>
+                    </div>
+                </div>
             </div>
         </div>
     );
