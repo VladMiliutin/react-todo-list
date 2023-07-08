@@ -19,7 +19,7 @@ const TODO_ITEMS = [
 ]
 
 
-function TodoComponent({title, isCompleted}) {
+function TodoComponent({title, isCompleted, removeTodoItem}) {
     const defaultStyle = "ml-4 mr-4 flex flex-col justify-center";
     const crossedStyle = `${defaultStyle} line-through`;
     const [checked, setChecked] = useState(isCompleted);
@@ -30,7 +30,7 @@ function TodoComponent({title, isCompleted}) {
         // Don't understand why its' reversed now
         setStyle(checked ? defaultStyle : crossedStyle);
     }
-    //console.log(`TodoComponent: ${title} ${isCompleted}`);
+
     return (
             <div className="flex flex-row gap-1 bg-gray-200 bg-opacity-70">
                     <input type="checkbox" 
@@ -40,6 +40,7 @@ function TodoComponent({title, isCompleted}) {
                     >
                     </input>
                     <span className={style}>{title}</span>
+                    <button className="ml-auto mr-4 mt-4 mb-4 w-8 h-8 bg-red-200 rounded-full" onClick={removeTodoItem}>X</button>
             </div>
     );
 }
@@ -48,6 +49,12 @@ function TodoListComponent() {
     const [todoItems, setTodoItems] = useState(TODO_ITEMS);
     const [hideInput, setHideInput] = useState(true);
     const [inputValue, setInputValue] = useState('');
+
+    const removeTodoItem = (index) => {
+        const newList = [...todoItems];
+        newList.splice(index, 1);
+        setTodoItems(newList);
+    }
 
     const addTodoItem = (title) => {
         const newList = [...todoItems, new TodoItem(title, false)];
@@ -67,7 +74,7 @@ function TodoListComponent() {
             <div className='flex flex-row justify-center'>
                 <div className="flex flex-col gap-1 max-w-md">
                     {todoItems.map((item, i) => {
-                        return <TodoComponent title={item.title} isCompleted={item.completed}/>
+                        return <TodoComponent title={item.title} isCompleted={item.completed} removeTodoItem={() => removeTodoItem(i)}/>
                     })}
                     <input 
                         className="border-2 pt-4 pb-4"
